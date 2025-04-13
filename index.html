@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heart Disease Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🫀 Heart Disease Risk Predictor</h1>
+    <form method="POST">
+        {% for field in ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
+                         'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'] %}
+            <label>{{ field }}:</label>
+            <input type="number" step="any" name="{{ field }}" required><br>
+        {% endfor %}
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction is not none %}
+        <h2>Prediction: <span class="result">{{ 'Heart Disease' if prediction else 'No Heart Disease' }}</span></h2>
+        <h3>Feature Contributions:</h3>
+        <img src="{{ url_for('static', filename='shap_summary.png') }}" alt="SHAP Summary Plot">
+    {% endif %}
+</body>
+</html>
