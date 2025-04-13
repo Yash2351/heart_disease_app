@@ -1,28 +1,44 @@
-from preprocess import load_and_clean_data
+import pandas as pd
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
 import joblib
 import os
 
-# Load data
-df = load_and_clean_data()
+# Load dataset
+columns = [
+    'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs',
+    'restecg', 'thalach', 'exang', 'oldpeak', 'slope',
+    'ca', 'thal', 'target'
+]
+
+df = pd.read_csv('processed.cleveland.data', names=columns)
+
+# Data cleaning
+df.replace('?', np.nan, inplace=True)
+df.dropna(inplace=True)
+df = df.apply(pd.to_numeric)
+
+# Convert target to binary (0 = no disease, 1 = disease)
+df['target'] = df['target'].apply(lambda x: 1 if x > 0 else 0)
+
+# Features and labels
 X = df.drop('target', axis=1)
 y = df['target']
 
-# Split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
-# Model
+# Train model
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Create model directory if it doesn't exist
+# Create model folder if it doesn't exist
 os.makedirs('model', exist_ok=True)
 
-# Save
+# Save model
 joblib.dump(model, 'model/model.pkl')
 
-# Optional: print metrics
-y_pred = model.predict(X_test)
-print(classification_report(y_test, y_pred))
+print("✅ Model trained and saved to model/model.pkl")
