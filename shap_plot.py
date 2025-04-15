@@ -1,6 +1,5 @@
 import shap
 import joblib
-from preprocess import load_and_clean_data
 import matplotlib.pyplot as plt
 import os
 
