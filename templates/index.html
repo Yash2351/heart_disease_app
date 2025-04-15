@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,20 +6,61 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>🫀 Heart Disease Risk Predictor</h1>
-    <form method="POST">
-        {% for field in ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
-                         'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'] %}
-            <label>{{ field }}:</label>
-            <input type="number" step="any" name="{{ field }}" required><br>
-        {% endfor %}
-        <button type="submit">Predict</button>
-    </form>
+    <div class="container">
+        <h1>🫀 Heart Disease Risk Predictor</h1>
+        <form method="POST">
+            <label>Age:</label>
+            <input type="number" name="age" required>
 
-    {% if prediction is not none %}
-        <h2>Prediction: <span class="result">{{ 'Heart Disease' if prediction else 'No Heart Disease' }}</span></h2>
-        <h3>Feature Contributions:</h3>
-        <img src="{{ url_for('static', filename='shap_summary.png') }}" alt="SHAP Summary Plot">
-    {% endif %}
+            <label>Gender:</label>
+            <select name="sex" required>
+                <option value="1">Male</option>
+                <option value="0">Female</option>
+            </select>
+
+            <label>Chest Pain Type (0-3):</label>
+            <input type="number" name="cp" min="0" max="3" required>
+
+            <label>Resting Blood Pressure:</label>
+            <input type="number" name="trestbps" required>
+
+            <label>Cholesterol Level:</label>
+            <input type="number" name="chol" required>
+
+            <label>Fasting Blood Sugar (>120 mg/dl = 1, else = 0):</label>
+            <input type="number" name="fbs" min="0" max="1" required>
+
+            <label>Resting ECG (0-2):</label>
+            <input type="number" name="restecg" min="0" max="2" required>
+
+            <label>Max Heart Rate Achieved:</label>
+            <input type="number" name="thalach" required>
+
+            <label>Exercise-induced Angina (1 = yes, 0 = no):</label>
+            <input type="number" name="exang" min="0" max="1" required>
+
+            <label>ST Depression:</label>
+            <input type="number" step="any" name="oldpeak" required>
+
+            <label>Slope (0-2):</label>
+            <input type="number" name="slope" min="0" max="2" required>
+
+            <label>Number of Major Vessels (0-3):</label>
+            <input type="number" name="ca" min="0" max="3" required>
+
+            <label>Thal (1 = normal; 2 = fixed defect; 3 = reversible defect):</label>
+            <input type="number" name="thal" min="0" max="3" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction is not none %}
+            <div class="result">
+                <h2>Prediction: {{ '🟥 Heart Disease Detected' if prediction else '🟩 No Heart Disease Detected' }}</h2>
+                <h3>Feature Contribution:</h3>
+                <img src="{{ url_for('static', filename='shap_summary.png') }}" alt="SHAP Summary">
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
